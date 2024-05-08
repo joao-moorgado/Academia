@@ -1,5 +1,6 @@
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import entities.Aluno;
@@ -11,6 +12,15 @@ import entities.Turno;
 public class FileManager {
 
     public static void main(String[] args) throws IOException {
+
+        Instrutor instrutor1 = new Instrutor("1", "Joao", "joao@gmail.com", "12/12/1988", "11");
+
+        Equipamento e1 = new Equipamento(1, "Pesinho", "Pesa pouco");
+        Equipamento e2 = new Equipamento(2, "Peso", "Pesa mais ou menos");
+        Equipamento e3 = new Equipamento(3, "Pesao", "Pesa muito");
+
+        Treino treino = new Treino();
+        treino.addEquipamento();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -54,7 +64,6 @@ public class FileManager {
                     break;
                 case 2:
                     Turno turno;
-
                     System.out.print("===============================\n" +
                             "Escolha o turno do treino:\n" +
                             "1 - DIURNO 2 - VESPERTINO 3 - NOTURNO" +
@@ -74,20 +83,54 @@ public class FileManager {
                             break;
                     }
 
-                    Treino treino = new Treino(LocalDate.now(), turno);
+                    System.out.println("Selecione o aluno a treinar:");
+                    consultarAluno();
+
+                    ArrayList<Equipamento> equipamentos = new ArrayList<>();
+                    System.out.print("===============================\n" +
+                            "Escolha os equipamentos do treino:\n" +
+                            "1 - PESINHO 2 - PESO 3 - PESÃO 4 - PRONTO" +
+                            "\n\nComando: ");
+                    n = scanner.nextInt();
+                    scanner.nextLine();
+
+                    while (n != 4) {
+                        switch (n) {
+                            case 1:
+                                equipamentos.add(e1);
+                                System.out.print("\n" +
+                                        "1 - PESINHO 2 - PESO 3 - PESÃO 4 - PRONTO" +
+                                        "\n\nComando: ");
+                                n = scanner.nextInt();
+                                scanner.nextLine();
+                                break;
+                            case 2:
+                                equipamentos.add(e2);
+                                System.out.print("\n" +
+                                        "1 - PESINHO 2 - PESO 3 - PESÃO 4 - PRONTO" +
+                                        "\n\nComando: ");
+                                n = scanner.nextInt();
+                                scanner.nextLine();
+                                break;
+                            case 3:
+                                equipamentos.add(e3);
+                                System.out.print("\n" +
+                                        "1 - PESINHO 2 - PESO 3 - PESÃO 4 - PRONTO" +
+                                        "\n\nComando: ");
+                                n = scanner.nextInt();
+                                scanner.nextLine();
+                                break;
+                            default:
+                                n = 4;
+                        }
+                    }
+
+                    Treino treino = new Treino(LocalDate.now(), turno, equipamentos);
 
                     verificarTreino();
                     registrarTreino(treino);
             }
         }
-
-
-        Instrutor instrutor1 = new Instrutor("1", "Joao", "joao@gmail.com", "12/12/1988", "11");
-
-        Equipamento e1 = new Equipamento(1, "Pesinho", "Pesa pouco");
-        Equipamento e2 = new Equipamento(2, "Peso", "Pesa mais ou menos");
-        Equipamento e3 = new Equipamento(3, "Pesao", "Pesa muito");
-
     }
 
     private static final File diretorio = new File("/home/joao_morgado/Documents/academia/src/repositories/");

@@ -49,7 +49,7 @@ public class Equipamento {
 
     @Override
     public String toString() {
-        return "\n  Nome: " + nome;
+        return nome;
     }
 
 }

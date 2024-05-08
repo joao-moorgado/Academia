@@ -21,11 +21,11 @@ public class Treino {
     public Treino() {
     }
 
-    public Treino(LocalDate data, Turno turno) {
+    public Treino(LocalDate data, Turno turno, List<Equipamento> equipamentos) {
         id = gerador.nextInt(10000);
         this.data = data;
         this.turno = turno;
-        equipamentos = new ArrayList<>();
+        this.equipamentos = equipamentos;
     }
 
     public Integer getId() {
