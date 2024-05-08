@@ -37,7 +37,6 @@ public class Aluno extends Pessoa {
                 "," + super.getEmail() +
                 "," + super.getDataNascimento() +
                 "," + peso +
-                "," + altura +
-                "\n";
+                "," + altura;
     }
 }

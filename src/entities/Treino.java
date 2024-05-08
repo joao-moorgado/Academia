@@ -15,17 +15,18 @@ public class Treino {
     private Integer id;
     private LocalDate data;
     private Turno turno;
-    private Aluno aluno;
+    private String idAluno;
     private List<entities.Equipamento> equipamentos;
 
     public Treino() {
     }
 
-    public Treino(LocalDate data, Turno turno, List<Equipamento> equipamentos) {
+    public Treino(LocalDate data, Turno turno, String idAluno) {
         id = gerador.nextInt(10000);
         this.data = data;
         this.turno = turno;
-        this.equipamentos = equipamentos;
+        this.idAluno = idAluno;
+        equipamentos = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -64,20 +65,19 @@ public class Treino {
         this.turno = turno;
     }
 
-    public Aluno getAluno() {
-        return aluno;
+    public String getIdAluno() {
+        return idAluno;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
+    public void setIdAluno(String idAluno) {
+        this.idAluno = idAluno;
     }
 
     public List<entities.Equipamento> getEquipamentos() {
         return equipamentos;
     }
 
-    public void salvarTreino(Aluno aluno) {
-        this.aluno = aluno;
+    public void salvarTreino() {
         for (entities.Equipamento e : equipamentos) {
             e.setStatus(true);
         }
@@ -92,8 +92,8 @@ public class Treino {
     }
 
     public void consultarTreino() {
-        System.out.println("Data do treino: " + data.format(dtf) + "\nTurno: " + turno.name() + "\nAluno: "
-                + aluno.getNome() + "\nEquipamentos: " + equipamentos);
+        System.out.println("Data do treino: " + data.format(dtf) + "\nTurno: " + turno.name() + "\nAlunoCPF: "
+                + idAluno + "\nEquipamentos: " + equipamentos);
     }
 
     @Override
@@ -101,8 +101,7 @@ public class Treino {
         return id +
                 "," + data +
                 "," + turno +
-                "," + aluno +
-                "," + equipamentos +
-                "\n";
+                "," + idAluno +
+                "," + equipamentos;
     }
 }

@@ -24,7 +24,7 @@ public class Registro {
     }
 
     public void addTreino(Treino treino, Aluno aluno) {
-        treino.salvarTreino(aluno);
+        treino.salvarTreino();
         treinos.add(treino);
         alunos.add(aluno);
     }
