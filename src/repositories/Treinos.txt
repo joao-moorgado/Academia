@@ -1,1 +1,10 @@
-1309,2024-05-07,VESPERTINO,null,[]
+9527,2024-05-08,DIURNO,null,[Pesinho, Peso]
+1904,2024-05-08,DIURNO,null,[Pesinho, Peso]
+9354,2024-05-08,VESPERTINO,null,[Pesinho, Peso]
+9537,2024-05-08,VESPERTINO,null,[Peso, Pesao]
+7798,2024-05-08,VESPERTINO,null,[Peso, Pesao]
+4254,2024-05-08,DIURNO,rgegegrrge,aa,eggsfsegseg,efsfsrgsg,80.5,1.7
+,[Pesinho, Peso]
+8969,2024-05-08,DIURNO,rgegegrrge,[Pesinho, Peso]
+3732,2024-05-08,DIURNO,rgrwgwg,[Pesinho, Peso, Pesao]
+572,2024-05-08,DIURNO,rgegegrrge,[Pesinho, Pesao]
