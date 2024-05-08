@@ -2,7 +2,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 import entities.Aluno;
@@ -20,9 +19,14 @@ public class FileManager {
         Equipamento e1 = new Equipamento(1, "Pesinho", "Pesa pouco");
         Equipamento e2 = new Equipamento(2, "Peso", "Pesa mais ou menos");
         Equipamento e3 = new Equipamento(3, "Pesao", "Pesa muito");
+        List<Equipamento> equipamentos = new ArrayList<>();
+        equipamentos.add(e1);
+        equipamentos.add(e2);
+        equipamentos.add(e3);
 
         Scanner scanner = new Scanner(System.in);
 
+        Integer idTreino = 0;
         Integer n = 1;
 
         while (n != 0) {
@@ -92,9 +96,10 @@ public class FileManager {
                     System.out.print("\nCPF: ");
                     String cpfSelecionado = scanner.nextLine();
 
-                    Aluno a = associarAluno(cpfSelecionado);
+                    Aluno a = recuperarAluno(cpfSelecionado);
 
-                    Treino treino = new Treino(LocalDate.now(), turno, a.getCpf());
+                    Treino treino = new Treino(idTreino, LocalDate.now(), turno, a.getCpf());
+                    idTreino++;
 
                     do {
 
@@ -124,11 +129,29 @@ public class FileManager {
                     registrarTreino(treino);
                     break;
                 case 3:
+                    System.out.print("\nInsira o CPF do Aluno que deseja buscar: ");
+                    String buscarAluno = scanner.nextLine();
+                    recuperarAluno(buscarAluno);
+                    consultarAluno(buscarAluno);
+
+                    System.out.println("1 - Voltar                   2 - Excluir");
+                    System.out.print("Comando: ");
+                    n = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (n) {
+                        case 2:
+                            removerAluno(buscarAluno);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case 4:
                     listarAlunosOrdenados();
                     break;
                 case 5:
+                    listarTreinosOrdenados(equipamentos);
                     break;
             }
         }
@@ -167,7 +190,8 @@ public class FileManager {
     }
 
     public static void listarAlunosOrdenados() throws FileNotFoundException {
-        List<String> nomesAlunos = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        List<Aluno> alunos = new ArrayList<>();
 
         // Ler os nomes dos alunos do arquivo
         try (Scanner leitor = new Scanner(new File("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt"))) {
@@ -175,33 +199,70 @@ public class FileManager {
                 String linha = leitor.nextLine();
                 String[] partes = linha.split(",");
                 if (partes.length > 1) {
-                    String nome = partes[1].trim(); // O nome está na segunda posição (índice 1) do array de partes
-                    nomesAlunos.add(nome);
+                    Aluno aluno = new Aluno(partes[0], partes[1], partes[2], partes[3], Double.parseDouble(partes[4]), Double.parseDouble(partes[5]));
+                    alunos.add(aluno);
                 }
             }
         }
 
         // Ordenar os nomes dos alunos
-        nomesAlunos.sort((x,y) -> x.compareTo(y));
+        alunos.sort((x,y) -> x.getNome().compareTo(y.getNome()));
 
         // Imprimir os nomes dos alunos ordenados
-        System.out.println("======= Lista de Nomes de Alunos =======");
-        for (String nome : nomesAlunos) {
-            System.out.println(nome);
+        System.out.println("======= Lista de Alunos =======\n");
+        for (Aluno aluno : alunos) {
+            System.out.println(aluno.getNome() + "  " + aluno.getCpf() + "  " + aluno.getEmail() +  "  " + aluno.getDataNascimento() );
         }
+
+        System.out.print("\nEnter para voltar");
+        scanner.nextLine();
     }
 
-    public static void consultarAluno(String nomeAluno) throws FileNotFoundException {
+    public static void listarTreinosOrdenados(List<Equipamento> equipamentos) throws FileNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+        List<Treino> treinos = new ArrayList<>();
+
+        // Ler os nomes dos alunos do arquivo
+        try (Scanner leitor = new Scanner(new File("/home/joao_morgado/Documents/academia/src/repositories/Treinos.txt"))) {
+            while (leitor.hasNextLine()) {
+                String linha = leitor.nextLine();
+                String[] partes = linha.split(",");
+                if (partes.length > 1) {
+                    Treino treino = new Treino(Integer.parseInt(partes[0]), LocalDate.parse(partes[1]), Turno.valueOf(partes[2]), partes[3]);
+                    String[] nome = partes[4].substring(1,partes[4].length()-1).split(",");
+                    for (String n : nome) {
+                        Equipamento equipamento = buscarEquipamento(equipamentos, n);
+                        treino.addEquipamento(equipamento);
+                    }
+                    treinos.add(treino);
+                }
+            }
+        }
+
+        // Ordenar os nomes dos alunos
+        treinos.sort((x,y) -> x.getId().compareTo(y.getId()));
+
+        // Imprimir os nomes dos alunos ordenados
+        System.out.println("======= Lista de Treinos =======\n");
+        for (Treino treino : treinos) {
+            System.out.println(treino.getId() + "  " + treino.getData() + "  " + treino.getTurno() +  "  " + treino.getIdAluno());
+        }
+
+        System.out.print("\nEnter para voltar");
+        scanner.nextLine();
+    }
+
+    public static void consultarAluno(String cpfAluno) throws FileNotFoundException {
         File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt");
         Scanner leitor = new Scanner(arquivo);
         boolean encontrado = false;
         while (leitor.hasNextLine()) {
             String linha = leitor.nextLine();
-            if (linha.contains(nomeAluno)) {
+            if (linha.contains(cpfAluno)) {
                 encontrado = true;
                 String[] partes = linha.split(",");
-                System.out.println("Aluno encontrado:");
-                System.out.println("Nome: " + partes[1]);
+                System.out.println("\nAluno encontrado:");
+                System.out.println("\nCPF: " + partes[0] + " Nome: "+ partes[1] + " E-mail: " + partes[2] + " Data de Nascimento: " + partes[3] + "\n");
                 break;
             }
         }
@@ -211,7 +272,7 @@ public class FileManager {
         leitor.close();
     }
 
-    public static Aluno associarAluno(String cpfAluno) throws FileNotFoundException {
+    public static Aluno recuperarAluno(String cpfAluno) throws FileNotFoundException {
         Aluno aluno = new Aluno();
         File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt");
         Scanner leitor = new Scanner(arquivo);
@@ -226,10 +287,42 @@ public class FileManager {
             }
         }
         if (!encontrado) {
-            System.out.println("Aluno não encontrado.");
+            return null;
         }
         leitor.close();
         return aluno;
+    }
+
+    public static Equipamento buscarEquipamento(List<Equipamento> equipamentos, String nome) {
+        for (Equipamento e : equipamentos) {
+            if (e.getNome().equals(nome)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public static void removerAluno(String cpfAluno) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt");
+        File arquivoTemp = new File("/home/joao_morgado/Documents/academia/src/repositories/AlunosTemp.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo));
+             PrintWriter writer = new PrintWriter(new FileWriter(arquivoTemp))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                if (!linha.startsWith(cpfAluno)) {
+                    writer.println(linha);
+                }
+            }
+        }
+
+        if (arquivo.delete() && arquivoTemp.renameTo(arquivo)) {
+            System.out.println("Aluno removido com sucesso!");
+        } else {
+            System.out.println("Falha ao remover o aluno.");
+        }
     }
 
     public static void verificarTreino() throws IOException {
@@ -247,14 +340,4 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
-    public static void consultarTreino() throws FileNotFoundException {
-        File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Treinos.txt");
-        Scanner leitor = new Scanner(arquivo);
-        while (leitor.hasNext()) {
-            System.out.println(leitor.nextLine());
-        }
-        leitor.close();
-    }
-
 }
