@@ -96,4 +96,13 @@ public class Treino {
                 + aluno.getNome() + "\nEquipamentos: " + equipamentos);
     }
 
+    @Override
+    public String toString() {
+        return id +
+                "," + data +
+                "," + turno +
+                "," + aluno +
+                "," + equipamentos +
+                "\n";
+    }
 }

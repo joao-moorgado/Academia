@@ -13,16 +13,20 @@ public class FileManager {
     public static void main(String[] args) throws IOException {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("========== ACADEMIA UP ==========\n\n" +
-                "[1] - Cadastrar Aluno\n" +
-                "[2] - Registrar Treino\n" +
-                "[0] - Fechar Programa\n" +
-                "\n" +
-                "Comando: ");
 
-        Integer n = scanner.nextInt();
+        Integer n = 1;
 
         while (n != 0) {
+
+            System.out.print("========== ACADEMIA UP ==========\n\n" +
+                    "[1] - Cadastrar Aluno\n" +
+                    "[2] - Registrar Treino\n" +
+                    "[0] - Fechar Programa\n" +
+                    "\n" +
+                    "Comando: ");
+
+            n = scanner.nextInt();
+
             switch (n) {
                 case 1:
                     String cpf, nome, email, dataNascimento;
@@ -45,12 +49,16 @@ public class FileManager {
 
                     Aluno aluno = new Aluno(cpf, nome, email, dataNascimento, peso, altura);
 
+                    verificarAluno();
                     registrarAluno(aluno);
                     break;
                 case 2:
                     Turno turno;
 
-                    System.out.print("Digite o turno do treino do aluno: ");
+                    System.out.print("===============================\n" +
+                            "Escolha o turno do treino:\n" +
+                            "1 - DIURNO 2 - VESPERTINO 3 - NOTURNO" +
+                            "\n\nComando: ");
                     n = scanner.nextInt();
                     scanner.nextLine();
 
@@ -67,6 +75,9 @@ public class FileManager {
                     }
 
                     Treino treino = new Treino(LocalDate.now(), turno);
+
+                    verificarTreino();
+                    registrarTreino(treino);
             }
         }
 
@@ -93,13 +104,39 @@ public class FileManager {
         FileWriter arquivoEscritor = new FileWriter("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt");
         PrintWriter gravador = new PrintWriter(arquivoEscritor);
 
-        System.out.println("Aluno registrado com sucesso!");
+        System.out.println("Aluno registrado com sucesso!\n");
         gravador.format(String.valueOf(aluno));
         gravador.close();
     }
 
     public static void consultarAluno() throws FileNotFoundException {
-        File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositoriesAlunos.txt");
+        File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Alunos.txt");
+        Scanner leitor = new Scanner(arquivo);
+        while (leitor.hasNext()) {
+            System.out.println(leitor.nextLine());
+        }
+        leitor.close();
+    }
+
+    public static void verificarTreino() throws IOException {
+
+        File aluno =  new File(diretorio, "Alunos.txt");
+
+        if (!aluno.exists())
+            aluno.createNewFile();
+    }
+
+    public static void registrarTreino(Treino treino) throws IOException {
+        FileWriter arquivoEscritor = new FileWriter("/home/joao_morgado/Documents/academia/src/repositories/Treinos.txt");
+        PrintWriter gravador = new PrintWriter(arquivoEscritor);
+
+        System.out.println("Treino registrado com sucesso!\n");
+        gravador.format(String.valueOf(treino));
+        gravador.close();
+    }
+
+    public static void consultarTreino() throws FileNotFoundException {
+        File arquivo = new File("/home/joao_morgado/Documents/academia/src/repositories/Treinos.txt");
         Scanner leitor = new Scanner(arquivo);
         while (leitor.hasNext()) {
             System.out.println(leitor.nextLine());
